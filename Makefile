@@ -3,7 +3,7 @@ DIRS := . Minmatching ./Minmatching/MinCost
 SOURCES := $(foreach dir, $(DIRS), $(wildcard $(dir)/*.cpp))
 OBJS := $(patsubst %.cpp, %.o, $(SOURCES))
 
-CFLAGS := -O3 -D_NDEBUG -std=c++11
+CFLAGS := -O0 -g -std=c++11
 CXX ?= c++
 LIBS := 
 INCLUDES := 

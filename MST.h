@@ -1,34 +1,60 @@
 #include "common.h"
+#include "Minmatching/PerfectMatching.h"
+#include <vector>
+#include <unordered_map>
+#include <utility>
 
 #pragma once
 
 class MST {
 public:
-	int** adjacentMatrix;
+	float** adjacentMatrix;
+    float ** mstAdjMatrix;
+    std::vector<int> tour;
 	int* parent; //Array to store constructed MST
 	int* key; //Key values used to pick minimum weight edge in cut
 	bool* mstSet; //To represent set of vertices not yet included in MST
 	int N; //the size of pointset
 
-	MST(int** adjacentMatrix, int size);
+    int * edges;
+    int * weights;
+
+    bool * visited;
+    std::vector<std::pair<int, int>> prelist;
+
+	MST(float** adjacentMatrix, int size);
 	~MST();
 
 	//deliverable a
 	void makeTree();
-	void printMST();
+	int printMST();
 
 	//deliverable b
-	void makeTSP2();
+	int makeTSP2();
+    void printTSP2();
+
+    int dfs(int u, int count);
 
 	//deliverable c
-	void makeTSP1_5();
+    void findOddDegreeVertices();
+	int makeTSP1_5();
+    int eulerTour(int u, float ** adjMatrix);
+    void printTSP1_5();
 	
+
+    std::vector<int> mstResults;
+    std::vector<int> TSP2Results;
+    std::vector<int> TSP1p5Results;
+
 	float calMean(int option);
 	float calStd(int option, int mean);
 
 private:
+    std::vector<int> odds;
+    std::unordered_map<int, int> matched;
+    PerfectMatching * pm;
 	void minimumMatching();
-	void combine();
+	int combine(int node_num);
 	int minKey(int key[], bool mstSet[]);
 
 };

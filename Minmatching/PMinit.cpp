@@ -300,6 +300,7 @@ void PerfectMatching::InitGlobal()
 	Tree TREE;
 	enum { NONE, AUGMENT, SHRINK } flag;
 
+    //Test
 	InitGreedy();
 
 	for (i=nodes; i<nodes+node_num; i++) i->best_edge = NULL;
