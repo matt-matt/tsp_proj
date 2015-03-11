@@ -28,9 +28,9 @@ int main() {
 	int W, H, N;
 	Point pointset;
 
-	W = 100;
-	H = 100;
-	N = 10;
+	W = 16811;
+	H = 17722;
+	N = 9596;
 
 	cout<<"W: "<<W<<" H: "<<H<<" N:"<<N<<endl;
 

@@ -109,7 +109,7 @@ int MST::makeTSP2() {
     //Append the DFS root node with it post value to complete cycle
     int root = rand() % (N - 1) + 1;
     prelist.push_back(std::make_pair(dfs(root, 1), root));
-    printTSP2();
+    //printTSP2();
     int sum = 0;
     for (int i = 1; i <= N; i++)    {
         int to = prelist[i].second;
@@ -251,23 +251,26 @@ int MST::eulerTour(int u, float ** adjMatrix)    {
          auto searchv = matched.find(v);
          if (searchu != matched.end() && searchu -> second == v)   {
              matched.erase(searchu);
-             cout<<"Eliminating "<<u<<" - "<<v<<endl;
+             //cout<<"Eliminating "<<u<<" - "<<v<<endl;
              eulerTour(v, adjMatrix);
          }
          else if (searchv != matched.end() && searchv -> second == u)  {
              matched.erase(searchv);
-             cout<<"Eliminating "<<v<<" - "<<u<<endl;
+             //cout<<"Eliminating "<<v<<" - "<<u<<endl;
              eulerTour(v, adjMatrix);
         }
 
         if (adjMatrix[u][v] && adjMatrix[v][u]) {
             adjMatrix[u][v] = 0;
             adjMatrix[v][u] = 0;
-            cout<<"Eliminating "<<u<<" - "<<v<<endl;
+            //cout<<"Eliminating "<<u<<" - "<<v<<endl;
             eulerTour(v, adjMatrix);
         }
    }
-   cout<<"Pushing "<<u<<endl;
+   if (u % 1000 == 0)   {
+       cout<<".";
+       cout.flush();
+   }
    tour.push_back(u);
 }
         
@@ -280,10 +283,10 @@ int MST::combine(int node_num) {
 	for (i=0; i<node_num; i++) {
 		j = pm->GetMatch(i);
 		if (i < j)  {
-            printf("%d %d\n", odds[i], odds[j]);
+            //printf("%d %d\n", odds[i], odds[j]);
             //mstAdjMatrix[odds[i]][odds[j]] = adjacentMatrix[odds[i]][odds[j]];
             //mstAdjMatrix[odds[j]][odds[i]] = adjacentMatrix[odds[j]][odds[i]];
-            cout<<mstAdjMatrix[odds[j]][odds[i]]<<endl;
+            //cout<<mstAdjMatrix[odds[j]][odds[i]]<<endl;
             matched.insert(std::make_pair(odds[i], odds[j]));
         }
 	}
@@ -299,7 +302,7 @@ int MST::combine(int node_num) {
             dupcheck.insert(std::make_pair(tour[i], tour[i]));
         }
     }
-    printTSP1_5();
+    //printTSP1_5();
     int sum = 0;
     for (int i = 1; i <= N; i++)    {
         int to = tour[i];
