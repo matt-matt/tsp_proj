@@ -1,6 +1,5 @@
 #include "MST.h"
 #include "Minmatching/PerfectMatching.h"
-#include <cmath>
 
 MST::MST(float** input, int size) {
 	adjacentMatrix = input;
@@ -85,12 +84,14 @@ int MST::minKey(int key[], bool mstSet[])
 
 // A utility function to print the constructed MST stored in parent[]
 int MST::printMST() {
+    /*
 	cout<<endl;
 	cout<<"Minimum spanning tree from the adjacency matrix"<<endl;
 	cout<<"Edge   Weight"<<endl;
+    */
     int sum = 0;
 	for (int i = 1; i < N; i++) {
-		cout<<parent[i]<<" - "<<i<<"  "<<adjacentMatrix[i][parent[i]]<<endl;
+		//cout<<parent[i]<<" - "<<i<<"  "<<adjacentMatrix[i][parent[i]]<<endl;
         sum += adjacentMatrix[i][parent[i]];
 	}
     
@@ -107,28 +108,28 @@ int MST::makeTSP2() {
 
     //Assemble list of nodes in ascending order of pre values from DFS
     //Append the DFS root node with it post value to complete cycle
-    int root = rand() % (N - 1) + 1;
-    prelist.push_back(std::make_pair(dfs(root, 1), root));
+    dfs(0);
+    prelist.push_back(0);
     //printTSP2();
     int sum = 0;
+    
     for (int i = 1; i <= N; i++)    {
-        int to = prelist[i].second;
-        int from = prelist[i - 1].second;
+        int to = prelist[i];
+        int from = prelist[i - 1];
         sum += adjacentMatrix[to][from];
     }
+    
     return sum;
 }
 
-int MST::dfs(int u, int count) {
+void MST::dfs(int u) {
     visited[u] = true;
-    prelist.push_back(std::make_pair(count, u));
+    prelist.push_back(u);
     for (int v = 0; v < N; v++)    {
         if (!visited[v] && (mstAdjMatrix[u][v] && mstAdjMatrix[v][u]))  {
-            count = dfs(v, ++count);
+            dfs(v);
         }
     }
-    return ++count;
-
 }
 
 void MST::printTSP2()   {
@@ -137,14 +138,15 @@ void MST::printTSP2()   {
 	cout<<"Edge   Weight"<<endl;
     float sum = 0;
 	for (int i = 1; i <= N; i++) {
-        int to = prelist[i].second;
-        int from = prelist[i - 1].second;
+        int to = prelist[i];
+        int from = prelist[i - 1];
 		cout<<from<<" - "<<to<<"  "<<adjacentMatrix[to][from]<<endl;
         sum += adjacentMatrix[to][from];
 	}
     cout<<sum<<endl;
 }
 
+//Finds all odd degree vertices and places them in the odds vector
 void MST::findOddDegreeVertices()   {
     for (int i = 0; i < N; i++) {
         int degree = 0;
@@ -245,25 +247,25 @@ int MST::makeTSP1_5() {
     return combine(odds.size());
 }
 
-int MST::eulerTour(int u, float ** adjMatrix)    {
+//http://www.dcc.fc.up.pt/~pribeiro/estagio2008/usaco/3_3_EulerianTour.htm
+void MST::eulerTour(int u, float ** adjMatrix)    {
     for (int v = 0; v < N; v++) {
+
+         //First check the hash table for any mathcing paths to take
          auto searchu = matched.find(u);
          auto searchv = matched.find(v);
          if (searchu != matched.end() && searchu -> second == v)   {
              matched.erase(searchu);
-             //cout<<"Eliminating "<<u<<" - "<<v<<endl;
              eulerTour(v, adjMatrix);
          }
          else if (searchv != matched.end() && searchv -> second == u)  {
              matched.erase(searchv);
-             //cout<<"Eliminating "<<v<<" - "<<u<<endl;
              eulerTour(v, adjMatrix);
         }
-
+        //If not, check the original MST
         if (adjMatrix[u][v] && adjMatrix[v][u]) {
             adjMatrix[u][v] = 0;
             adjMatrix[v][u] = 0;
-            //cout<<"Eliminating "<<u<<" - "<<v<<endl;
             eulerTour(v, adjMatrix);
         }
    }
@@ -280,6 +282,7 @@ int MST::combine(int node_num) {
 
     int i, j;
 
+    //Insert all matched pairs into a hashtable to be used in the Euler tour.
 	for (i=0; i<node_num; i++) {
 		j = pm->GetMatch(i);
 		if (i < j)  {
@@ -290,9 +293,15 @@ int MST::combine(int node_num) {
             matched.insert(std::make_pair(odds[i], odds[j]));
         }
 	}
+
+
     eulerTour(0, mstAdjMatrix);
+
+
     std::unordered_map<int, int> dupcheck;
     
+    //Check tour for nodes that get visited twice, and eliminate them
+    //This implements shortcutting
     for (int i = 0; i < N; i++) {
         auto search = dupcheck.find(tour[i]);
         if (search != dupcheck.end())   {

@@ -10,7 +10,6 @@ class MST {
 public:
 	float** adjacentMatrix;
     float ** mstAdjMatrix;
-    std::vector<int> tour;
 	int* parent; //Array to store constructed MST
 	int* key; //Key values used to pick minimum weight edge in cut
 	bool* mstSet; //To represent set of vertices not yet included in MST
@@ -20,7 +19,6 @@ public:
     int * weights;
 
     bool * visited;
-    std::vector<std::pair<int, int>> prelist;
 
 	MST(float** adjacentMatrix, int size);
 	~MST();
@@ -33,12 +31,12 @@ public:
 	int makeTSP2();
     void printTSP2();
 
-    int dfs(int u, int count);
+    void dfs(int u);
 
 	//deliverable c
     void findOddDegreeVertices();
 	int makeTSP1_5();
-    int eulerTour(int u, float ** adjMatrix);
+    void eulerTour(int u, float ** adjMatrix);
     void printTSP1_5();
 	
 
@@ -51,6 +49,8 @@ public:
 
 private:
     std::vector<int> odds;
+    std::vector<int> prelist;
+    std::vector<int> tour;
     std::unordered_map<int, int> matched;
     PerfectMatching * pm;
 	void minimumMatching();
